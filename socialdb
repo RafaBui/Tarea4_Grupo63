@@ -1,0 +1,150 @@
+/************************************************************
+ *  Caso de uso: Red social
+ ************************************************************/
+
+/*User*/
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["username", "email", "createdAt", "status"],
+    "properties": {
+      "username": { "bsonType": "string", "minLength": 3, "pattern": "^[a-zA-Z0-9_.]+$" },
+      "email":    { "bsonType": "string" },
+      "name":     { "bsonType": "string" },
+      "bio":      { "bsonType": "string" },
+      "avatarUrl":{ "bsonType": "string" },
+      "createdAt":{"bsonType": "date" },
+      "status":   { "enum": ["active","suspended","deleted"] },
+      "settings": {
+        "bsonType": "object",
+        "properties": {
+          "lang":   { "bsonType": "string" },
+          "privacy": {
+            "bsonType": "object",
+            "properties": {
+              "profile": { "enum": ["public","private"] },
+              "dm":      { "enum": ["all","followers","none"] }
+            }
+          }
+        }
+      },
+      "counters": {
+        "bsonType": "object",
+        "properties": {
+          "followers": { "bsonType": "int" },
+          "following": { "bsonType": "int" },
+          "posts":     { "bsonType": "int" }
+        }
+      }
+    }
+  }
+}
+/*post*/
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["authorId", "createdAt", "visibility"],
+    "properties": {
+      "authorId": { "bsonType": "objectId" },
+      "text": { "bsonType": "string" },
+      "media": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "object",
+          "required": ["type", "url"],
+          "properties": {
+            "type": { "enum": ["image","video"] },
+            "url": { "bsonType": "string" }
+          }
+        }
+      },
+      "hashtags": {
+        "bsonType": "array",
+        "items": { "bsonType": "string" }
+      },
+      "mentions": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "object"
+        }
+      },
+      "createdAt": { "bsonType": "date" },
+      "visibility": { "enum": ["public","followers","private"] },
+      "metrics": {
+        "bsonType": "object",
+        "properties": {
+          "likes": { "bsonType": "int" },
+          "comments": { "bsonType": "int" },
+          "shares": { "bsonType": "int" }
+        }
+      },
+      "geo": { "bsonType": "object" }
+    }
+  }
+}
+/*comments*/
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["postId", "authorId", "text", "createdAt"],
+    "properties": {
+      "postId":   { "bsonType": "objectId" },
+      "authorId": { "bsonType": "objectId" },
+      "text":     { "bsonType": "string", "minLength": 1 },
+      "createdAt":{ "bsonType": "date" },
+      "replyToCommentId": { "bsonType": "objectId" }
+    }
+  }
+}
+/*likes*/
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["postId", "userId", "createdAt"],
+    "properties": {
+      "postId":   { "bsonType": "objectId" },
+      "userId":   { "bsonType": "objectId" },
+      "createdAt":{ "bsonType": "date" }
+    }
+  }
+}
+/*follows*/
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["followerId","followeeId","createdAt","status"],
+    "properties": {
+      "followerId": { "bsonType": "objectId" },
+      "followeeId": { "bsonType": "objectId" },
+      "createdAt":  { "bsonType": "date" },
+      "status":     { "enum": ["accepted","pending","blocked"] }
+    }
+  }
+}
+/*hashtags*/
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["_id", "display", "updatedAt"],
+    "properties": {
+      "_id":      { "bsonType": "string" },
+      "display":  { "bsonType": "string" },
+      "counters": { "bsonType": "object" },
+      "updatedAt":{ "bsonType": "date" }
+    }
+  }
+}
+/*notifications*/
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["userId","type","createdAt","isRead"],
+    "properties": {
+      "userId":  { "bsonType": "objectId" },
+      "type":    { "enum": ["like","comment","follow","mention"] },
+      "data":    { "bsonType": "object" },
+      "isRead":  { "bsonType": "bool" },
+      "createdAt":{ "bsonType": "date" }
+    }
+  }
+}
